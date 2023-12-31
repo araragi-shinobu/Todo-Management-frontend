@@ -1,29 +1,20 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { getAllTodos } from '../services/TodoService'
 
 const ListTodoComponent = () => {
+    const [todos, setTodos] = useState([])
 
-    const dummyData = [
-        {
-            "id": 1,
-            "title": "Learn js",
-            "description": "Learn js with examples",
-            "completed": false
-        },
-        {
-            "id": 2,
-            "title": "Learn java",
-            "description": "Learn java with examples",
-            "completed": false
-        },
-        {
-            "id": 3,
-            "title": "Learn spring",
-            "description": "Learn spring with examples",
-            "completed": false
-        }
-    ]
+    useEffect(() => {
+        listTodos();
+    }, [])
 
-    const [todos, setTodos] = useState(dummyData)
+    function listTodos() {
+        getAllTodos().then((response) => {
+            setTodos(response.data);
+        }).catch(error => {
+            console.error(error);
+        })
+    }
 
     return (
         <div className='container'>
@@ -39,13 +30,13 @@ const ListTodoComponent = () => {
                     </thead>
                     <tbody>
                         {
-                            todos.map(todo => {
+                            todos.map(todo =>
                                 <tr key={todo.id}>
                                     <td>{todo.title}</td>
                                     <td>{todo.description}</td>
                                     <td>{todo.completed ? 'Yes' : 'No'}</td>
                                 </tr>
-                            })
+                            )
                         }
                     </tbody>
                 </table>
