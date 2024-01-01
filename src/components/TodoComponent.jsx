@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react'
-import { saveTodo } from '../services/TodoService'
+import { getTodo, saveTodo, updateTodo } from '../services/TodoService'
 import { useNavigate, useParams } from 'react-router-dom'
 
 const TodoComponent = () => {
@@ -17,13 +17,22 @@ const TodoComponent = () => {
         const todo = { title, description, completed }
         console.log(todo)
 
-        saveTodo(todo).then((response) => {
-            console.log(response.data)
-            navigate('/todos')
-        }).catch(errerror => {
-            console.log(error)
-        })
+        if (id) {
+            updateTodo(id, todo).then((response) => {
+                navigate('/todos')
+            }).catch(error => {
+                console.log(error)
+            })
+        } else {
+            saveTodo(todo).then((response) => {
+                console.log(response.data)
+                navigate('/todos')
+            }).catch(error => {
+                console.log(error)
+            })
+        }
     }
+
     function pageTitle() {
         if (id) {
             return <h2 className='text-center'>Update Todo</h2>
@@ -32,6 +41,18 @@ const TodoComponent = () => {
         }
     }
 
+    useEffect(() => {
+        if (id) {
+            getTodo(id).then((response) => {
+                console.log(response.data)
+                setTitle(response.data.title)
+                setDescription(response.data.description)
+                setCompleted(response.data.completed)
+            }).catch(error => {
+                console.log(error)
+            })
+        }
+    }, [id])
 
     return (
         <div className='container'>
