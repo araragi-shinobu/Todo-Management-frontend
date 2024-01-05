@@ -1,9 +1,16 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
-import { isUserLoggedIn } from '../services/AuthService'
+import { isUserLoggedIn, logout } from '../services/AuthService'
+import { useNavigate } from 'react-router-dom'
 
 export const HeaderComponent = () => {
     const isAuth = isUserLoggedIn();
+    const navigator = useNavigate();
+
+    function handleLogout() {
+        logout()
+        navigator('/login')
+    }
 
     return (
         <div>
@@ -39,6 +46,14 @@ export const HeaderComponent = () => {
                                 <NavLink to="/login" className="nav-link">Login</NavLink>
                             </li>
                         }
+
+                        {
+                            isAuth &&
+                            <li className='nav-item'>
+                                <NavLink to="/login" className="nav-link" onClick={handleLogout}>Logout</NavLink>
+                            </li>
+                        }
+
                     </ul>
                 </nav>
             </header>
